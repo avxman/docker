@@ -41,9 +41,9 @@ services:
       - ./config/nginx/etc:/etc/nginx
     #  - ./config/nginx/etc/logs:/etc/nginx/logs
       - volume-nginx:/etc/nginx/logs
-      - ./www/public:/var/www/html/public
-      - ./www/resources:/var/www/html/resources
-      - ./www/storage/app:/var/www/html/storage/app
+      - ./www/localhost/public:/var/www/html/public
+      - ./www/localhost/resources:/var/www/html/resources
+      - ./www/localhost/storage/app:/var/www/html/storage/app
   db:
     restart: unless-stopped
     container_name: server-db
@@ -95,19 +95,19 @@ services:
       - composer-update
     volumes:
       - ./config/php/php.ini:/usr/local/etc/php/conf.d/default.ini
-      - ./www/app:/var/www/html/app
-      - ./www/bootstrap:/var/www/html/bootstrap
-      - ./www/config:/var/www/html/config
-      - ./www/database:/var/www/html/database
-      - ./www/lang:/var/www/html/lang
-      - ./www/public:/var/www/html/public
-      - ./www/resources:/var/www/html/resources
-      - ./www/routes:/var/www/html/routes
-      - ./www/storage:/var/www/html/storage
-      - ./www/tests:/var/www/html/tests
-      - ./www/.env:/var/www/html/.env
-      - ./www/artisan:/var/www/html/artisan
-      - ./www/composer.json:/var/www/html/composer.json
+      - ./www/localhost/app:/var/www/html/app
+      - ./www/localhost/bootstrap:/var/www/html/bootstrap
+      - ./www/localhost/config:/var/www/html/config
+      - ./www/localhost/database:/var/www/html/database
+      - ./www/localhost/lang:/var/www/html/lang
+      - ./www/localhost/public:/var/www/html/public
+      - ./www/localhost/resources:/var/www/html/resources
+      - ./www/localhost/routes:/var/www/html/routes
+      - ./www/localhost/storage:/var/www/html/storage
+      - ./www/localhost/tests:/var/www/html/tests
+      - ./www/localhost/.env:/var/www/html/.env
+      - ./www/localhost/artisan:/var/www/html/artisan
+      - ./www/localhost/composer.json:/var/www/html/composer.json
       - volume-php:/var/www/html/vendor
   composer:
     container_name: server-composer
@@ -121,7 +121,7 @@ services:
       - laravel/laravel
       - ./
     volumes:
-      - ./www:/app
+      - ./www/localhost:/app
   composer-update:
     container_name: server-composer-update
     image: composer:latest
@@ -132,7 +132,7 @@ services:
       - composer
       - update
     volumes:
-      - ./www:/app
+      - ./www/localhost:/app
       - volume-php:/app/vendor
   phpmyadmin:
     restart: unless-stopped
