@@ -19,8 +19,8 @@ volumes:
     name: volume-server-redis
     driver: local
   volume-phpmyadmin:
-      name: volume-server-phpmyadmin
-      driver: local
+    name: volume-server-phpmyadmin
+    driver: local
 
 services:
   nginx:
