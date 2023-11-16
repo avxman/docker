@@ -1,0 +1,170 @@
+version: "3.9"
+
+networks:
+  network-server:
+    name: network-server
+    driver: bridge
+
+volumes:
+  volume-nginx:
+    name: volume-server-nginx
+    driver: local
+  volume-php:
+    name: volume-server-php
+    driver: local
+  volume-db:
+    name: volume-server-db
+    driver: local
+  volume-redis:
+    name: volume-server-redis
+    driver: local
+  volume-phpmyadmin:
+      name: volume-server-phpmyadmin
+      driver: local
+
+services:
+  nginx:
+    restart: unless-stopped
+    container_name: server-nginx
+    image: nginx:latest
+    user: root:root
+    working_dir: /var/www/html
+    ports:
+      - "80:80"
+    networks:
+      - network-server
+    depends_on:
+      - db
+      - redis
+      - php
+    volumes:
+      - ./config/nginx/etc:/etc/nginx
+    #  - ./config/nginx/etc/logs:/etc/nginx/logs
+      - volume-nginx:/etc/nginx/logs
+      - ./www/public:/var/www/html/public
+      - ./www/resources:/var/www/html/resources
+      - ./www/storage/app:/var/www/html/storage/app
+  db:
+    restart: unless-stopped
+    container_name: server-db
+    image: mysql:latest
+    user: root:root
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --log-bin=off
+    ports:
+      - "8002:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "DF%£r234ty7S4G7^&*WgfE89i$5oR"
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: "BOr!~@2e72£$IhE6C)^x6J0I&oi347TtFp"
+    networks:
+      - network-server
+    volumes:
+      - volume-db:/var/lib/mysql
+    #  - ./volumes/db/restore/mysql.sh:/docker-entrypoint-initdb.d/mysql.sh
+    #  - ./volumes/db/backup/:/home/
+  redis:
+    restart: unless-stopped
+    container_name: server-redis
+    image: redis:latest
+    user: root:root
+    ports:
+      - "8003:6379"
+    networks:
+      - network-server
+    volumes:
+      - volume-redis:/data
+      - ./config/redis/redis.conf:/usr/local/etc/redis/redis.conf
+  php:
+    restart: unless-stopped
+    container_name: server-php
+    build:
+      dockerfile: ./Dockerfile-php
+      context: .
+    image: server-php
+    user: root:root
+    working_dir: /var/www/html
+    ports:
+      - "8004:9000"
+    networks:
+      - network-server
+    depends_on:
+      - composer
+      - composer-update
+    volumes:
+      - ./config/php/php.ini:/usr/local/etc/php/conf.d/default.ini
+      - ./www/app:/var/www/html/app
+      - ./www/bootstrap:/var/www/html/bootstrap
+      - ./www/config:/var/www/html/config
+      - ./www/database:/var/www/html/database
+      - ./www/lang:/var/www/html/lang
+      - ./www/public:/var/www/html/public
+      - ./www/resources:/var/www/html/resources
+      - ./www/routes:/var/www/html/routes
+      - ./www/storage:/var/www/html/storage
+      - ./www/tests:/var/www/html/tests
+      - ./www/.env:/var/www/html/.env
+      - ./www/artisan:/var/www/html/artisan
+      - ./www/composer.json:/var/www/html/composer.json
+      - volume-php:/var/www/html/vendor
+  composer:
+    container_name: server-composer
+    image: composer:latest
+    user: root:root
+    networks:
+      - network-server
+    command:
+      - composer
+      - create-project
+      - laravel/laravel
+      - ./
+    volumes:
+      - ./www:/app
+  composer-update:
+    container_name: server-composer-update
+    image: composer:latest
+    user: root:root
+    networks:
+      - network-server
+    command:
+      - composer
+      - update
+    volumes:
+      - ./www:/app
+      - volume-php:/app/vendor
+  phpmyadmin:
+    restart: unless-stopped
+    container_name: server-phpmyadmin
+    image: phpmyadmin:latest
+    user: root:root
+    ports:
+      - "8005:80"
+    environment:
+      PMA_ARBITRARY: 1
+      MYSQL_USER: user
+      MYSQL_PASSWORD: "BOr!~@2e72£$IhE6C)^x6J0I&oi347TtFp"
+      MAX_EXECUTION_TIME: 120
+      MEMORY_LIMIT: 256M
+      UPLOAD_LIMIT: 50M
+      PMA_VERBOSE: MySQL
+      PMA_PMADB: mysql
+    networks:
+      - network-server
+    volumes:
+      - volume-phpmyadmin:/etc/phpmyadmin
+  redis-admin:
+    restart: unless-stopped
+    container_name: server-redis-admin
+    image: erikdubbelboer/phpredisadmin:latest
+    user: root:root
+    environment:
+      REDIS_1_HOST: redis
+      REDIS_1_PORT: 6379
+    ports:
+      - "8006:80"
+    depends_on:
+      - redis
+    networks:
+      - network-server
