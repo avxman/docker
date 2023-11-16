@@ -152,6 +152,8 @@ services:
       PMA_PMADB: mysql
     networks:
       - network-server
+    depends_on:
+      - php
     volumes:
       - volume-phpmyadmin:/etc/phpmyadmin
   redis-admin:
