@@ -23,6 +23,31 @@ volumes:
     driver: local
 
 services:
+  composer:
+    container_name: server-composer
+    image: composer:latest
+    user: root:root
+    networks:
+      - network-server
+    command:
+      - composer
+      - create-project
+      - laravel/laravel
+      - ./
+    volumes:
+      - ./www/localhost:/app
+  composer-update:
+    container_name: server-composer-update
+    image: composer:latest
+    user: root:root
+    networks:
+      - network-server
+    command:
+      - composer
+      - update
+    volumes:
+      - ./www/localhost:/app
+      - volume-php:/app/vendor
   nginx:
     restart: unless-stopped
     container_name: server-nginx
@@ -109,31 +134,6 @@ services:
       - ./www/localhost/artisan:/var/www/html/artisan
       - ./www/localhost/composer.json:/var/www/html/composer.json
       - volume-php:/var/www/html/vendor
-  composer:
-    container_name: server-composer
-    image: composer:latest
-    user: root:root
-    networks:
-      - network-server
-    command:
-      - composer
-      - create-project
-      - laravel/laravel
-      - ./
-    volumes:
-      - ./www/localhost:/app
-  composer-update:
-    container_name: server-composer-update
-    image: composer:latest
-    user: root:root
-    networks:
-      - network-server
-    command:
-      - composer
-      - update
-    volumes:
-      - ./www/localhost:/app
-      - volume-php:/app/vendor
   phpmyadmin:
     restart: unless-stopped
     container_name: server-phpmyadmin
