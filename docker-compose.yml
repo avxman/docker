@@ -51,11 +51,15 @@ services:
   nginx:
     restart: unless-stopped
     container_name: server-nginx
-    image: nginx:latest
+    build:
+      dockerfile: ./Dockerfile-nginx
+      context: .
+    image: server-nginx
     user: root:root
     working_dir: /var/www/html
     ports:
       - "80:80"
+      - "443:443"
     networks:
       - network-server
     depends_on:
@@ -111,25 +115,12 @@ services:
     image: server-php
     user: root:root
     working_dir: /var/www/html
-    ports:
-      - "8004:9000"
     networks:
       - network-server
     volumes:
       - ./config/php/php.ini:/usr/local/etc/php/conf.d/default.ini
-      - ./www/localhost/app:/var/www/html/app
-      - ./www/localhost/bootstrap:/var/www/html/bootstrap
-      - ./www/localhost/config:/var/www/html/config
-      - ./www/localhost/database:/var/www/html/database
-      - ./www/localhost/lang:/var/www/html/lang
-      - ./www/localhost/public:/var/www/html/public
-      - ./www/localhost/resources:/var/www/html/resources
-      - ./www/localhost/routes:/var/www/html/routes
-      - ./www/localhost/storage:/var/www/html/storage
-      - ./www/localhost/tests:/var/www/html/tests
-      - ./www/localhost/.env:/var/www/html/.env
-      - ./www/localhost/artisan:/var/www/html/artisan
-      - ./www/localhost/composer.json:/var/www/html/composer.json
+      - ./www/localhost:/var/www/html:rw
+      - ./volumes/php/entrypoint.sh:/entrypoint.d/entrypoint.sh
       - volume-php:/var/www/html/vendor
   phpmyadmin:
     restart: unless-stopped

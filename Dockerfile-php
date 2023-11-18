@@ -31,3 +31,7 @@ RUN docker-php-ext-install zip \
         && docker-php-ext-install gd \
     && docker-php-ext-enable imagick \
     && PHP_OPENSSL=yes
+
+# Expose port 9000 and start php-fpm server
+EXPOSE 9000
+CMD ["php-fpm"]
