@@ -1,41 +1,43 @@
-# Среда разработки для фреймворка Laravel
+# Laravel Framework development environment
 
-**С помощью docker подымаем сервер для разработки. Используваем связку:**
+[Documentation in Russian](https://github.com/avxman/docker/blob/master/readme-ru.md)
+
+**Using Docker, we raise the server for development. We use the bunch:**
 * Nginx
 * Php-fpm
 * MySql
 * Redis
 
-## Установка
-1. Открываем терминал и переходим в корневую папку среды разработки
-2. Запускаем команду: `docker compose up composer`. Дожидаемся остановки контейнера
-3. Запускаем команду: `docker compose up composer-update`. Дожидаемся остановки контейнера
+## Installation
+1. We open the terminal and go to the root folder of the development environment
+2. We launch the command: `docker compose up composer`. We wait for the container to stop
+3. We launch the command: `docker compose up composer-update`. We wait for the container to stop
 
-***Установка завершена***
+***Installation completed***
 
-## Запуск
-1. Открываем терминал и переходим в корневую папку среды разработки
-2. Запускаем команду: `docker composer up nginx`. Ожидаем запуск 4-х контейнеров 
-(nginx, php, db, redis)
+## Launch
+1. We open the terminal and go to the root folder of the development environment
+2. We launch the command: `docker composer up nginx`. We expect the launch of 4 containers
+   (nginx, php, db, redis)
 
-***Среда разработки запущена***
+***The development environment has been launched***
 
-## Остановка
-1. Открываем терминал и переходим в корневую папку среды разработки
-2. Запускаем команду: `docker compose stop`. Ожидаем остановку всех контейнеров
+## Stop
+1. We open the terminal and go to the root folder of the development environment
+2. We launch the command: `docker compose stop`. We expect a stop of all containers
 
-***Среда разработки остановлена***
+***The development environment is stopped***
 
-## Завершение
-1. Открываем терминал и переходим в корневую папку среды разработки
-2. Запускаем команду: `docker compose down`. Ожидаем удаление всех контейнеров
+## Completion
+1. We open the terminal and go to the root folder of the development environment
+2. We launch the command: `docker compose down`. We expect to remove all containers
 
-***Среда разработки завершена***
+***The development environment is completed***
 
-### Дополнительная информация
-* Выдает ошибку связана с правами доступов к папкам и файлам.
-* 1. Нужно зайти в запущенный контейнер php `docker exec -it server-php`
-* 2. Запустить команду: 
+### Additional Information
+* It issues an error related to access rights to folders and files.
+* 1. You need to go to the neglected container php `docker exec -it server-php`
+* 2. Launch the command:
 ```shell
 chmod -R 777 /var/www/html/storage \
     && chmod -R 666 $(find /var/www/html/storage -type f) \
@@ -44,5 +46,5 @@ chmod -R 777 /var/www/html/storage \
     && chown -R www-data:www-data /var/www/html/storage \
     && chown -R www-data:www-data /var/www/html/bootstrap/cache
 ```
-* 3. Выйти из контейнера указав комбинацию клавиш в терминале: `ctrl+d` 
-или консольной командой: `logout`
+* 3. To leave the container indicating the key combination in the terminal: `ctrl+d`
+     or console command: `logout`
