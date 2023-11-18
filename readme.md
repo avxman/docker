@@ -48,3 +48,7 @@ chmod -R 777 /var/www/html/storage \
 ```
 * 3. To leave the container indicating the key combination in the terminal: `ctrl+d`
      or console command: `logout`
+
+### Links to the site:
+1. https://localhost
+2. http://localhost

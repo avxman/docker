@@ -48,3 +48,7 @@ chmod -R 777 /var/www/html/storage \
 ```
 * 3. Выйти из контейнера указав комбинацию клавиш в терминале: `ctrl+d`
      или консольной командой: `logout`
+
+### Ссылки на сайт:
+1. https://localhost
+2. http://localhost
